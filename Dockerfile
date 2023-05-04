@@ -14,12 +14,12 @@ COPY --from=planner /app/recipe.json recipe.json
 # Notice that we are specifying the --target flag!
 RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
 COPY . .
-RUN cargo build --release --target x86_64-unknown-linux-musl 
+RUN cargo build --release --target x86_64-unknown-linux-musl --bin axum_uuid_json
 
 FROM alpine AS runtime
 RUN addgroup -S myuser && adduser -S myuser -G myuser
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/backend /usr/local/bin/
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/axum_uuid_json /usr/local/bin/
 
 USER myuser
 EXPOSE 3000
-CMD ["/usr/local/bin/backend"]
+CMD ["/usr/local/bin/axum_uuid_json"]
